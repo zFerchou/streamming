@@ -34,9 +34,17 @@ exports.getAllVideos = async (req, res) => {
 };
 
 exports.getVideoById = async (req, res) => {
-  const video = await Video.findById(req.params.id).populate('owner', 'username');
-  if (!video) return res.status(404).json({ message: 'Video not found' });
-  res.json(video);
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'ID de video no válido' });
+    }
+    
+    const video = await Video.findById(req.params.id).populate('owner', 'username');
+    if (!video) return res.status(404).json({ message: 'Video not found' });
+    res.json(video);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.saveMoment = async (req, res) => {
@@ -47,4 +55,35 @@ exports.saveMoment = async (req, res) => {
     { new: true }
   );
   res.json(video);
+};
+
+exports.getRecommendedVideos = async (req, res) => {
+  try {
+    // Lógica para obtener videos recomendados
+    const videos = await Video.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate('owner', 'username');
+    
+    res.json({ recommendations: videos });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const mongoose = require('mongoose');
+
+exports.getVideoById = async (req, res) => {
+  // Validar que el ID sea un ObjectId válido
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(400).json({ message: 'ID de video no válido' });
+  }
+  
+  try {
+    const video = await Video.findById(req.params.id).populate('owner', 'username');
+    if (!video) return res.status(404).json({ message: 'Video no encontrado' });
+    res.json(video);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
