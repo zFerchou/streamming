@@ -6,19 +6,29 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.updateProfile = async (req, res) => {
-  const { username, description, country } = req.body;
-  const avatar = req.files?.avatar;
-  let avatarPath;
+  try {
+    const updates = {
+      username: req.body.username,
+      description: req.body.description,
+      country: req.body.country,
+      preferences: JSON.parse(req.body.preferences) // Parsea el JSON
+    };
 
-  if (avatar) {
-    const path = `uploads/avatars/${Date.now()}_${avatar.name}`;
-    await avatar.mv(path);
-    avatarPath = '/' + path;
+    if (req.file) {
+      updates.avatar = `/uploads/avatars/${req.file.filename}`;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updates,
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.json(user);
+  } catch (error) {
+    res.status(400).json({ 
+      message: 'Error al actualizar',
+      error: error.message 
+    });
   }
-
-  const updateData = { username, description, country };
-  if (avatarPath) updateData.avatar = avatarPath;
-
-  const updated = await User.findByIdAndUpdate(req.user.id, updateData, { new: true });
-  res.json(updated);
 };

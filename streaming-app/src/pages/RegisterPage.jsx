@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../services/authService';
+import { authService } from '../services/authService';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,10 +14,10 @@ function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(formData);
-      navigate('/login'); // Redirige al login tras registro exitoso
+      await authService.registrar(formData);
+      navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.message || 'Error al registrar usuario');
+      setError(err.message);
     }
   };
 

@@ -10,6 +10,17 @@ const userSchema = new mongoose.Schema({
   country:  { type: String },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
   history:   [{ type: mongoose.Schema.Types.ObjectId, ref: 'Video' }],
+   preferences: {
+   preferences: {
+    hashtags: [{ type: String }],  // Ej: ["#tech", "#gaming"]
+    contentTypes: {                // Preferencias avanzadas
+      youtube: Boolean,
+      localVideos: Boolean,
+      liveStreams: Boolean
+    },
+    excludedTags: [{ type: String }] // Contenido a evitar
+  }
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

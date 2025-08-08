@@ -13,7 +13,6 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(fileUpload());
 app.use('/uploads', express.static('uploads'));
 
 // Routes

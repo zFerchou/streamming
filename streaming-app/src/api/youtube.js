@@ -1,13 +1,15 @@
-// src/api/youtube.js
 import axios from "axios";
 
-const API_KEY = "AIzaSyCVDLhO9aRzpUCwYhn0c5Ajy6Tzi3ReOa0"; // ← Cámbiala por tu clave real
+export const API_KEY = "AIzaSyC0oSV_GT_32NLCE22UZSAV4sQbtdfVxTE"; // ← Recuerda proteger esta clave
 
-export default axios.create({
-  baseURL: "https://www.googleapis.com/youtube/v3",
+const youtube = axios.create({
+  baseURL: 'https://www.googleapis.com/youtube/v3',
   params: {
-    part: "snippet",
+    part: 'snippet',
     maxResults: 12,
-    key: API_KEY,
-  },
+    key: process.env.REACT_APP_YOUTUBE_API_KEY, // Usa variables de entorno
+    type: 'video'
+  }
 });
+
+export default youtube;

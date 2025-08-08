@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/videos';
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+const VIDEOS_URL = `${BASE_URL}/videos`;
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
@@ -8,39 +9,62 @@ const getAuthHeaders = () => {
 };
 
 export const fetchAllVideos = async () => {
-  const res = await axios.get(API_URL);
-  return res.data;
+  try {
+    const res = await axios.get(`${VIDEOS_URL}/`);
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching videos:', error);
+    throw error;
+  }
 };
 
-export const fetchRecommendedVideos = async () => {
-  // Llamamos al endpoint de recomendaciones inteligentes
-  const token = localStorage.getItem('token');
-  const url = 'http://localhost:5000/api/intelligent/recommendations';
 
-  if (!token) return fetchAllVideos();
-
-  const res = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } });
-  return res.data.recommendations;
-};
 
 export const uploadVideo = async (formData) => {
-  const res = await axios.post(`${API_URL}/upload`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      ...getAuthHeaders(),
-    },
-  });
-  return res.data;
+  try {
+    const res = await axios.post(`${VIDEOS_URL}/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        ...getAuthHeaders(),
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error('Error uploading video:', error);
+    throw error;
+  }
 };
 
 export const getVideoById = async (id) => {
-  const res = await axios.get(`${API_URL}/${id}`);
-  return res.data;
+  try {
+    const res = await axios.get(`${VIDEOS_URL}/${id}`);
+    return res.data;
+  } catch (error) {
+    console.error('Error fetching video by ID:', error);
+    throw error;
+  }
 };
 
 export const saveMoment = async (videoId, second) => {
-  const res = await axios.post(`${API_URL}/${videoId}/moment`, { second }, {
-    headers: getAuthHeaders(),
-  });
-  return res.data;
+  try {
+    const res = await axios.post(`${VIDEOS_URL}/${videoId}/moment`, { second }, {
+      headers: getAuthHeaders(),
+    });
+    return res.data;
+  } catch (error) {
+    console.error('Error saving moment:', error);
+    throw error;
+  }
+};
+export const fetchRecommendedVideos = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+    
+    const res = await axios.get(`${VIDEOS_URL}/recommendations`, config);
+    return res.data?.recommendations || [];
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+    throw error;
+  }
 };

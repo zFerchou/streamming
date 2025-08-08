@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/intelligent';
-
-
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+const INTELLIGENT_URL = `${BASE_URL}/intelligent`;
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
@@ -10,8 +9,16 @@ const getAuthHeaders = () => {
 };
 
 export const getRecommendations = async () => {
-  const res = await axios.get(`${API_URL}/recommendations`, {
-    headers: getAuthHeaders(),
-  });
-  return res.data;
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return [];
+    
+    const res = await axios.get(`${INTELLIGENT_URL}/recommendations`, {
+      headers: getAuthHeaders()
+    });
+    return res.data.recommendations || [];
+  } catch (error) {
+    console.error('Error getting recommendations:', error);
+    return [];
+  }
 };

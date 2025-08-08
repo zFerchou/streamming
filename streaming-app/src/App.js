@@ -3,15 +3,16 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import Navbar from './components/Navbar'; // Importa el Navbar
+import Navbar from './components/Navbar';
 import './styles/global.css';
+import '@coreui/coreui/dist/css/coreui.min.css';
 
 function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
         <Router>
-          <Navbar /> {/* Agrega el Navbar aquí */}
+          <Navbar />
           <AppRoutes />
         </Router>
       </ThemeProvider>
@@ -19,4 +20,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; // Asegúrate de tener esta línea

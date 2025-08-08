@@ -31,7 +31,6 @@ const VideoPlayer = ({ url, onMomentSave }) => {
         playbackRate={speed}
         autoPlay
         onEnded={() => {
-          // podrías agregar autoplay del siguiente video aquí
         }}
       />
       <div className="controls">

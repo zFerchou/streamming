@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { login } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
+import { authService } from '../services/authService';
 import useAuth from '../hooks/useAuth';
 
 const LoginPage = () => {
@@ -12,11 +12,11 @@ const LoginPage = () => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const { user } = await login({ email, password });
+      const { user } = await authService.login({ email, password });
       setUser(user);
       navigate('/');
-    } catch {
-      alert('Error en login');
+    } catch (error) {
+      alert(error.message);
     }
   };
 
