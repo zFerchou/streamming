@@ -1,123 +1,88 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Heart, Clock } from 'lucide-react';
 
-const VideoCard = ({ video, onLike }) => {
-  // Validación de URLs
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
+const VideoCard = ({ video, onLike, isAuthenticated, onVideoClick }) => {
+  const handleClick = () => {
+    if (onVideoClick) {
+      onVideoClick(video);
     }
+  };
+
+  const handleLikeClick = (e) => {
+    e.stopPropagation();
+    if (onLike) {
+      onLike(video.id);
+    }
+  };
+
+  // Formatear la duración del video (convertir de segundos o formato ISO a MM:SS)
+  const formatDuration = (duration) => {
+    if (!duration) return '00:00';
+    
+    // Si ya está en formato MM:SS o HH:MM:SS
+    if (typeof duration === 'string' && duration.includes(':')) {
+      return duration;
+    }
+    
+    // Si es un número (segundos)
+    if (typeof duration === 'number') {
+      const mins = Math.floor(duration / 60);
+      const secs = Math.floor(duration % 60);
+      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+    
+    return '00:00';
   };
 
   // Props con valores por defecto
   const {
     id,
-    source = 'local',
     title = 'Sin título',
-    url = null,
-    hashtags = [],
     thumbnail = null,
     duration = '00:00',
-    channelTitle = ''
+    channelTitle = '',
+    viewCount = '',
+    publishedAt = '',
+    isLiked = false
   } = video;
 
-  const renderVideoPlayer = () => {
-    switch (source) {
-      case 'youtube':
-        return (
-          <div className="video-embed">
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={`YouTube: ${title}`}
-              loading="lazy"
-            />
-          </div>
-        );
-      
-      case 'vimeo':
-        return (
-          <div className="video-embed">
-            <iframe
-              src={`https://player.vimeo.com/video/${id}`}
-              frameBorder="0"
-              allow="autoplay; fullscreen"
-              allowFullScreen
-              title={`Vimeo: ${title}`}
-              loading="lazy"
-            />
-          </div>
-        );
-      
-      default:
-        return (
-          <div className="video-container">
-            {thumbnail && isValidUrl(thumbnail) ? (
-              <img 
-                src={thumbnail} 
-                alt={`Miniatura de ${title}`} 
-                className="video-thumbnail"
-                loading="lazy"
-              />
-            ) : (
-              <div className="video-thumbnail-placeholder">
-                <span>Miniatura no disponible</span>
-              </div>
-            )}
-            
-            {url && isValidUrl(url) ? (
-              <video 
-                src={url}
-                controls
-                poster={isValidUrl(thumbnail) ? thumbnail : undefined}
-              >
-                Tu navegador no soporta el elemento <code>video</code>.
-              </video>
-            ) : (
-              <div className="video-unavailable">
-                <p>Video no disponible</p>
-              </div>
-            )}
-          </div>
-        );
-    }
-  };
-
   return (
-    <div className="video-card">
-      <div className="video-player">
-        {renderVideoPlayer()}
-        {duration && <span className="video-duration">{duration}</span>}
-      </div>
-
-      <div className="video-info">
-        <h3 className="video-title">{title}</h3>
-        {channelTitle && <p className="video-channel">{channelTitle}</p>}
-        
-        {hashtags.length > 0 && (
-          <div className="video-tags">
-            {hashtags.map(tag => (
-              <span key={tag} className="video-tag">#{tag}</span>
-            ))}
-          </div>
-        )}
-
-        <div className="video-actions">
-          <button 
-            className="like-button"
-            onClick={() => onLike && onLike(id)}
-            aria-label="Me gusta este video"
-            disabled={!onLike}
-          >
-            <span role="img" aria-hidden="true">👍</span>
-          </button>
+    <div className="video-card" onClick={handleClick}>
+      <div className="video-thumbnail-container">
+        <img 
+          src={thumbnail} 
+          alt={title}
+          className="video-thumbnail"
+          loading="lazy"
+        />
+        <div className="video-overlay">
+          <div className="play-icon">▶</div>
+        </div>
+        <div className="video-duration">
+          <Clock size={12} />
+          <span>{formatDuration(duration)}</span>
         </div>
       </div>
+      
+      <div className="video-info">
+        <h3 className="video-title">{title}</h3>
+        
+        <div className="video-meta">
+          <span className="channel-name">{channelTitle}</span>
+          {viewCount && <span className="view-count">{viewCount} vistas</span>}
+          {publishedAt && <span className="publish-date">{publishedAt}</span>}
+        </div>
+      </div>
+      
+      <button 
+        className={`like-button ${isLiked ? 'liked' : ''}`}
+        onClick={handleLikeClick}
+        disabled={!isAuthenticated}
+        aria-label="Me gusta"
+      >
+        <Heart size={18} fill={isLiked ? 'currentColor' : 'none'} />
+      </button>
     </div>
   );
 };
@@ -125,19 +90,23 @@ const VideoCard = ({ video, onLike }) => {
 VideoCard.propTypes = {
   video: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    source: PropTypes.oneOf(['youtube', 'vimeo', 'local']),
     title: PropTypes.string,
-    url: PropTypes.string,
-    hashtags: PropTypes.arrayOf(PropTypes.string),
     thumbnail: PropTypes.string,
-    duration: PropTypes.string,
-    channelTitle: PropTypes.string
+    duration: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    channelTitle: PropTypes.string,
+    viewCount: PropTypes.string,
+    publishedAt: PropTypes.string,
+    isLiked: PropTypes.bool
   }).isRequired,
-  onLike: PropTypes.func
+  onLike: PropTypes.func,
+  isAuthenticated: PropTypes.bool,
+  onVideoClick: PropTypes.func
 };
 
 VideoCard.defaultProps = {
-  onLike: null
+  onLike: null,
+  isAuthenticated: false,
+  onVideoClick: null
 };
 
 export default VideoCard;

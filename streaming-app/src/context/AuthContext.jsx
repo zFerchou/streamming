@@ -1,72 +1,48 @@
-import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
-import axios from 'axios';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const fetchUser = useCallback(async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
+  // Helper para extraer usuario del response
+  const extraerUsuario = (response) => response.usuario || response;
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await authService.obtenerUsuarioActual();
+        const userData = extraerUsuario(response);
+        setUser(userData);
+      } catch (error) {
+        setUser(null);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Configura el token en los headers de axios por defecto
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      const data = await authService.obtenerUsuarioActual();
-      setUser(data);
-    } catch (err) {
-      console.error('Error fetching user:', err);
-      setError(err.response?.data?.message || 'Error al obtener usuario');
-      if (err.response?.status === 401) {
-        localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization'];
-      }
-    } finally {
-      setLoading(false);
-    }
+    };
+    loadUser();
   }, []);
 
   const login = async (credentials) => {
     try {
-      const { token, user } = await authService.login(credentials);
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser(user);
-      return user;
-    } catch (err) {
-      throw err;
+      const response = await authService.login(credentials);
+      const userData = extraerUsuario(response);
+      setUser(userData);
+      return userData;
+    } catch (error) {
+      throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
+    authService.logout();
     setUser(null);
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
-
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      loading, 
-      error, 
-      login, 
-      logout,
-      refetchUser: fetchUser
-    }}>
+    <AuthContext.Provider value={{ user, setUser, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

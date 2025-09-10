@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const videoRoutes = require('./routes/videoRoutes');
 const intelligentRoutes = require('./routes/intelligentRoutes');
+const livestreamsRouter = require('./routes/livestreams');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/intelligent', intelligentRoutes);
+app.use('/api/livestreams', livestreamsRouter);
 
 // 404
 app.use((req, res, next) => {

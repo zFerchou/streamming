@@ -1,0 +1,207 @@
+/* styles/navbar.css */
+:root {
+  /* Colores base - Tema claro (default) */
+  --navbar-bg-color: #ffffff;
+  --navbar-text-color: #333333;
+  --navbar-border-color: #e5e7eb;
+  --navbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --navbar-brand-color: #3b82f6;
+  --nav-link-color: #4b5563;
+  --nav-link-hover-color: #3b82f6;
+  --nav-link-hover-bg: #f3f4f6;
+  --offcanvas-bg: #ffffff;
+  --offcanvas-header-bg: #f9fafb;
+  --offcanvas-text: #111827;
+  --button-bg: #3b82f6;
+  --button-text: #ffffff;
+  --button-hover-bg: #2563eb;
+  --logout-button-bg: #ef4444;
+  --logout-button-hover-bg: #dc2626;
+  --badge-bg: #10b981;
+  --badge-text: #ffffff;
+  --icon-color: #6b7280;
+  --icon-hover-color: #3b82f6;
+  --close-button-color: #6b7280;
+  --close-button-hover-color: #374151;
+  --divider-color: #e5e7eb;
+}
+
+[data-theme="dark"] {
+  /* Colores base - Tema oscuro */
+  --navbar-bg-color: #1f2937;
+  --navbar-text-color: #f9fafb;
+  --navbar-border-color: #374151;
+  --navbar-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --navbar-brand-color: #60a5fa;
+  --nav-link-color: #d1d5db;
+  --nav-link-hover-color: #60a5fa;
+  --nav-link-hover-bg: #374151;
+  --offcanvas-bg: #1f2937;
+  --offcanvas-header-bg: #111827;
+  --offcanvas-text: #f9fafb;
+  --button-bg: #60a5fa;
+  --button-text: #ffffff;
+  --button-hover-bg: #3b82f6;
+  --logout-button-bg: #ef4444;
+  --logout-button-hover-bg: #dc2626;
+  --badge-bg: #10b981;
+  --badge-text: #ffffff;
+  --icon-color: #9ca3af;
+  --icon-hover-color: #60a5fa;
+  --close-button-color: #9ca3af;
+  --close-button-hover-color: #d1d5db;
+  --divider-color: #374151;
+}
+
+/* Estilos generales del navbar */
+.custom-navbar {
+  background-color: var(--navbar-bg-color) !important;
+  color: var(--navbar-text-color);
+  border-bottom: 1px solid var(--navbar-border-color);
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+.custom-navbar.scrolled {
+  box-shadow: var(--navbar-shadow);
+}
+
+/* Brand y logo */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--navbar-brand-color) !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.brand-text {
+  color: var(--navbar-brand-color);
+}
+
+.login-badge {
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--badge-bg) !important;
+  color: var(--badge-text) !important;
+}
+
+/* Botón del toggler */
+.navbar-toggler {
+  border: none;
+  background: transparent;
+  color: var(--icon-color);
+  transition: color 0.2s ease;
+}
+
+.navbar-toggler:hover {
+  color: var(--icon-hover-color);
+}
+
+/* Offcanvas (menú lateral) */
+.offcanvas-menu {
+  background-color: var(--offcanvas-bg) !important;
+  color: var(--offcanvas-text);
+}
+
+.offcanvas-header {
+  background-color: var(--offcanvas-header-bg);
+  border-bottom: 1px solid var(--divider-color);
+  padding: 1rem 1.5rem;
+}
+
+.offcanvas-title {
+  color: var(--offcanvas-text);
+  font-weight: 600;
+}
+
+.close-button {
+  color: var(--close-button-color) !important;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: var(--close-button-hover-color) !important;
+}
+
+.offcanvas-body {
+  padding: 1rem 0;
+}
+
+/* Navegación */
+.navbar-nav {
+  padding: 0 1rem;
+}
+
+.nav-item {
+  margin-bottom: 0.25rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--nav-link-color) !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: var(--nav-link-hover-bg);
+  color: var(--nav-link-hover-color) !important;
+}
+
+.nav-icon {
+  color: var(--icon-color);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  color: var(--icon-hover-color);
+}
+
+/* Botón de cerrar sesión */
+.logout-item {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divider-color);
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--logout-button-bg) !important;
+  color: var(--button-text) !important;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: var(--logout-button-hover-bg) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+  
+  .offcanvas-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .navbar-nav {
+    padding: 0 0.5rem;
+  }
+  
+  .nav-link {
+    padding: 0.5rem 0.75rem !important;
+  }
+}
