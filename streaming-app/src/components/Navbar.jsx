@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   CButton,
   CCloseButton,
@@ -23,11 +23,37 @@ import {
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
+import { 
+  Home, 
+  Video, 
+  User, 
+  LogIn, 
+  UserPlus, 
+  Settings, 
+  Sun, 
+  Moon, 
+  LogOut,
+  Menu
+} from 'lucide-react';
+import '../styles/navbar.css'; // Asegúrate de importar el CSS
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { user, setUser } = useContext(AuthContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      setScrolled(isScrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -36,34 +62,48 @@ const Navbar = () => {
   };
 
   return (
-    <CNavbar className={`bg-body-tertiary ${theme === 'dark' ? 'bg-dark' : ''}`} colorScheme="dark">
+    <CNavbar className={`custom-navbar ${scrolled ? 'scrolled' : ''}`} colorScheme="light">
       <CContainer fluid>
-        <CNavbarBrand as={Link} to="/" className="d-flex align-items-center">
-          <span className="me-2">Jajajalolxd</span>
-          {user && <CBadge color="success">logueado</CBadge>}
+        <CNavbarBrand as={Link} to="/" className="navbar-brand">
+          <span className="brand-text">Fertube</span>
+          {user && <CBadge color="success" className="login-badge">Logueado</CBadge>}
         </CNavbarBrand>
         
         <CNavbarToggler
           aria-controls="offcanvasNavbar"
           onClick={() => setVisible(!visible)}
-        />
+          className="navbar-toggler"
+        >
+          <Menu size={24} />
+        </CNavbarToggler>
         
         <COffcanvas
           id="offcanvasNavbar"
           placement="end"
           visible={visible}
           onHide={() => setVisible(false)}
-          className={theme === 'dark' ? 'bg-dark text-white' : ''}
+          className="offcanvas-menu"
         >
-          <COffcanvasHeader>
-            <COffcanvasTitle>Menú Principal</COffcanvasTitle>
-            <CCloseButton onClick={() => setVisible(false)} />
+          <COffcanvasHeader className="offcanvas-header">
+            <COffcanvasTitle className="offcanvas-title">
+              Menú Principal
+            </COffcanvasTitle>
+            <CCloseButton 
+              onClick={() => setVisible(false)} 
+              className="close-button"
+            />
           </COffcanvasHeader>
           
-          <COffcanvasBody>
-            <CNavbarNav className="justify-content-end flex-grow-1 pe-3">
-              <CNavItem>
-                <CNavLink as={Link} to="/" onClick={() => setVisible(false)}>
+          <COffcanvasBody className="offcanvas-body">
+            <CNavbarNav className="navbar-nav">
+              <CNavItem className="nav-item">
+                <CNavLink 
+                  as={Link} 
+                  to="/" 
+                  onClick={() => setVisible(false)}
+                  className="nav-link"
+                >
+                  <Home size={18} className="nav-icon" />
                   Inicio
                 </CNavLink>
               </CNavItem>
@@ -71,70 +111,60 @@ const Navbar = () => {
               {/* Opciones para usuarios autenticados */}
               {user ? (
                 <>
-                  <CNavItem>
-                    <CNavLink as={Link} to="/upload" onClick={() => setVisible(false)}>
-                      Subir Video
-                    </CNavLink>
-                  </CNavItem>
                   
-                  <CNavItem>
-                    <CNavLink as={Link} to="/live" onClick={() => setVisible(false)}>
-                      Transmisión en Vivo
-                    </CNavLink>
-                  </CNavItem>
                   
-                  <CNavItem>
-                    <CNavLink as={Link} to="/profile" onClick={() => setVisible(false)}>
+                  <CNavItem className="nav-item">
+                    <CNavLink 
+                      as={Link} 
+                      to="/profile" 
+                      onClick={() => setVisible(false)}
+                      className="nav-link"
+                    >
+                      <User size={18} className="nav-icon" />
                       Mi Perfil ({user.username})
                     </CNavLink>
                   </CNavItem>
-                  
-                  
                 </>
               ) : (
                 <>
-                  <CNavItem>
-                    <CNavLink as={Link} to="/login" onClick={() => setVisible(false)}>
+                  <CNavItem className="nav-item">
+                    <CNavLink 
+                      as={Link} 
+                      to="/login" 
+                      onClick={() => setVisible(false)}
+                      className="nav-link"
+                    >
+                      <LogIn size={18} className="nav-icon" />
                       Iniciar Sesión
                     </CNavLink>
                   </CNavItem>
                   
-                  <CNavItem>
-                    <CNavLink as={Link} to="/register" onClick={() => setVisible(false)}>
+                  <CNavItem className="nav-item">
+                    <CNavLink 
+                      as={Link} 
+                      to="/register" 
+                      onClick={() => setVisible(false)}
+                      className="nav-link"
+                    >
+                      <UserPlus size={18} className="nav-icon" />
                       Registrarse
                     </CNavLink>
                   </CNavItem>
                 </>
               )}
 
-              
-              
-              {/* Menú desplegable para configuración */}
-              <CDropdown variant="nav-item" popper={false}>
-                <CDropdownToggle color="secondary">
-                  Configuración
-                </CDropdownToggle>
-                <CDropdownMenu className={theme === 'dark' ? 'bg-dark' : ''}>
-                  <CDropdownItem onClick={() => { toggleTheme(); setVisible(false); }}>
-                    {theme === 'dark' ? 'Modo Claro ☀️' : 'Modo Oscuro 🌙'}
-                  </CDropdownItem>
-                  {user && (
-                    <>
-                      <CDropdownDivider />
-                      <CDropdownItem as={Link} to="/profile/settings" onClick={() => setVisible(false)}>
-                        Configuración de Perfil
-                      </CDropdownItem>
-                    </>
-
-                    
-                  )}
-                </CDropdownMenu>
-              </CDropdown>
-              <CNavItem className="mt-2">
-                    <CButton color="danger" onClick={logout} className="w-100">
-                      Cerrar Sesión
-                    </CButton>
-                  </CNavItem>
+              {user && (
+                <CNavItem className="nav-item logout-item">
+                  <CButton 
+                    color="danger" 
+                    onClick={logout} 
+                    className="logout-button"
+                  >
+                    <LogOut size={18} className="logout-icon" />
+                    Cerrar Sesión
+                  </CButton>
+                </CNavItem>
+              )}
             </CNavbarNav>
           </COffcanvasBody>
         </COffcanvas>
