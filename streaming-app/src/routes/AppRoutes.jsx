@@ -11,10 +11,12 @@ import LiveStreamPage from '../pages/LiveStreamPage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import RegisterPage from '../pages/RegisterPage';
 import ProfileSettingsPage from '../pages/ProfileSettingsPage.jsx';
+import WelcomeScreen from '../pages/WelcomeScreen.jsx';
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<HomePage />} />
+    <Route path="/" element={<WelcomeScreen />} />
+    <Route path="/Home" element={<HomePage />} />
     <Route path="/login" element={<LoginPage />} />
     <Route path="/register" element={<RegisterPage />} />
     <Route path="/video/:id" element={<VideoPage />} />
