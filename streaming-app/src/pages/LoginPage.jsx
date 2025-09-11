@@ -18,7 +18,7 @@ const LoginPage = () => {
     try {
       const { user } = await authService.login({ email, password });
       setUser(user);
-      navigate('/');
+      navigate('/Home');
     } catch (error) {
       setError(error.message);
     }

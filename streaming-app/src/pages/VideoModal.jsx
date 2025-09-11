@@ -25,13 +25,7 @@ const VideoModal = ({ video, isOpen, onClose }) => {
         <div className="modal-header">
           <h3 className="modal-title">{video.title}</h3>
           <div className="modal-controls">
-            <button 
-              className="modal-control-button" 
-              onClick={toggleFullscreen}
-              aria-label={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
-            >
-              {isFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-            </button>
+            
             <button 
               className="modal-control-button" 
               onClick={handleClose}

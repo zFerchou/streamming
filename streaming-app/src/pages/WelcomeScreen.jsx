@@ -6,10 +6,10 @@ const WelcomeScreen = () => {
   const navigate = useNavigate();
 
   const handleStart = () => {
-    navigate('/Home'); // Redirige a la página principal
+    navigate('/Home'); 
   };
 
-  // Datos para las tarjetas informativas
+  
   const features = [
     {
       icon: <Play size={32} />,
@@ -38,7 +38,7 @@ const WelcomeScreen = () => {
       <div className="welcome-content">
         <div className="welcome-header">
           <h1 className="welcome-title">Bienvenido a Fertube</h1>
-          <p className="welcome-subtitle">La plataforma de videos educativos</p>
+          <p className="welcome-subtitle">La plataforma de videos de tu interés</p>
         </div>
         
         <div className="welcome-features">
