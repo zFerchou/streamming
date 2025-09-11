@@ -1,0 +1,15 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "zferchou/backend-streaming:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    { "ContainerPort": 5000 }
+  ],
+  "Environment": [
+    { "Name": "MONGO_URI", "Value": "mongodb+srv://zFerchou:Quesito23@cluster0.hi5g4om.mongodb.net/streaming-app?retryWrites=true&w=majority" },
+    { "Name": "PORT", "Value": "5000" },
+    { "Name": "JWT_SECRET", "Value": "guau" }
+  ]
+}
